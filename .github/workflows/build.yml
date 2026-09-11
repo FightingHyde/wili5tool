@@ -33,6 +33,9 @@ jobs:
           cd ~/pico-sdk
           git submodule update --init --depth 1
 
+      - name: Fix wilibsp tool permissions
+        run: chmod +x wilibsp/tools/*.py
+
       - name: Configure
         run: |
           export PICO_SDK_PATH=~/pico-sdk
