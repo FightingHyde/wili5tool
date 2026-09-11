@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(PICO_BOARD "pico2")
-set(PICO_PLATFORM "rp2350-arm-s")
+# Point the SDK at the FreeWili2 custom board header BEFORE importing the SDK.
+# freewili2.h lives in wilibsp/bsp/boards/ and defines PICO_PSRAM_SIZE_BYTES,
+# PICO_PLATFORM (rp2350-arm-s), flash size, and all other board constants.
+# Do NOT set PICO_BOARD on the cmake command line — that would override this.
+set(PICO_BOARD freewili2 CACHE STRING "Board type")
+list(APPEND PICO_BOARD_HEADER_DIRS "${CMAKE_CURRENT_LIST_DIR}/wilibsp/bsp/boards")
 
 include(pico_sdk_import.cmake)
 
