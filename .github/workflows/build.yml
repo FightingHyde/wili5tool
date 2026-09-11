@@ -1,0 +1,51 @@
+name: Build wili5tool
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo + submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install ARM toolchain
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q \
+            cmake ninja-build \
+            gcc-arm-none-eabi \
+            libnewlib-arm-none-eabi \
+            libstdc++-arm-none-eabi-newlib \
+            python3
+
+      - name: Install Pico SDK
+        run: |
+          git clone --depth 1 --branch 2.3.0 \
+            https://github.com/raspberrypi/pico-sdk.git ~/pico-sdk
+          cd ~/pico-sdk
+          git submodule update --init --depth 1
+
+      - name: Configure
+        run: |
+          export PICO_SDK_PATH=~/pico-sdk
+          cmake -B build -G Ninja \
+            -DPICO_SDK_PATH=~/pico-sdk \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Upload .uf2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wili5tool-uf2
+          path: build/app/wili5tool.uf2
+          if-no-files-found: warn
