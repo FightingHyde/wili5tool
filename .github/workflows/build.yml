@@ -35,8 +35,12 @@ jobs:
 
       - name: Fix wilibsp tool permissions
         run: |
+          for f in wilibsp/tools/*.py; do
+            if ! head -1 "$f" | grep -q "^#!"; then
+              sed -i '1i#!/usr/bin/env python3' "$f"
+            fi
+          done
           chmod +x wilibsp/tools/*.py
-          sed -i 's/\r$//' wilibsp/tools/*.py
 
       - name: Configure
         run: |
