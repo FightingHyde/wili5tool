@@ -56,5 +56,3 @@ fw2_display_app(wili5tool.elf
     VERSION 100
     DESCRIPTION "Wili5Tool Flipper-class multi-tool"
 )
-
-pico_add_extra_outputs(wili5tool.elf)
